@@ -1,20 +1,20 @@
 # From here: 
 # https://github.com/ocelhay/como/blob/1b61938191d9f63d512a3aaec9f5271a3ca0ed5a/misc/scripts/covidage_v16.7.R
 
-f <- c(1,(1+parameters["give"])/2,(1-parameters["give"])/2,0)
-KH<-parameters["beds_available"]
-KICU<- parameters["icu_beds_available"]+parameters["ventilators_available"]
-Kvent<- parameters["ventilators_available"]
-x.H <- c(0,(1+parameters["give"])*KH/2,(3-parameters["give"])*KH/2,2*KH)
-x.ICU <- c(0,(1+parameters["give"])*KICU/2,(3-parameters["give"])*KICU/2,2*KICU)
-x.Vent <- c(0,(1+parameters["give"])*Kvent/2,(3-parameters["give"])*Kvent/2,2*Kvent)
-fH <- splinefun(x.H, f, method = "hyman")
-fICU <- splinefun(x.ICU, f, method = "hyman")
-fVent<- splinefun(x.Vent, f, method = "hyman")
-
 # set up a function to solve the equations
-covid<-function(t, Y, parameters,input) 
-{
+covid<-function(t, Y, parameters, input){
+  
+  f <- c(1,(1+parameters["give"])/2,(1-parameters["give"])/2,0)
+  KH<-parameters["beds_available"]
+  KICU<- parameters["icu_beds_available"]+parameters["ventilators_available"]
+  Kvent<- parameters["ventilators_available"]
+  x.H <- c(0,(1+parameters["give"])*KH/2,(3-parameters["give"])*KH/2,2*KH)
+  x.ICU <- c(0,(1+parameters["give"])*KICU/2,(3-parameters["give"])*KICU/2,2*KICU)
+  x.Vent <- c(0,(1+parameters["give"])*Kvent/2,(3-parameters["give"])*Kvent/2,2*Kvent)
+  fH <- splinefun(x.H, f, method = "hyman")
+  fICU <- splinefun(x.ICU, f, method = "hyman")
+  fVent<- splinefun(x.Vent, f, method = "hyman")
+  
   with(as.list(c(Y, parameters)),
        {
          S <- Y[Sindex]
