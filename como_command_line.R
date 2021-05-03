@@ -7,9 +7,10 @@ USE_CPP <- FALSE
 # PREAMBLE
 # --------
 if(VERBOSE){cat("Loading packages and functions\n")}
-source("como_preamble.R")
-source("model_once.R")
-source("como_functions.R")
+source("R/como_preamble.R")
+source("R/model_once.R")
+source("R/como_functions.R")
+source("R/fun_covid.R") # solution function for deSolve (no CPP)
 
 ###################
 # COMMAND-LINE ARGS
@@ -22,16 +23,6 @@ args <- commandArgs(trailingOnly = TRUE)
 country_name <- args[1]
 file_path <- args[2]
 output_file <- args[3]
-
-###################
-# LOAD non-CPP function
-# -----------------
-
-if(!USE_CPP){
-  if(VERBOSE){cat("Loading functions for deSolve\n")}
-  source("como_read_data.R")
-  source("fun_covid.R")
-}
 
 ###################
 # RUN THE MODEL
@@ -50,9 +41,9 @@ list_output <- run_model(list_template)
 dta <- process_outputs(list_output, list_template)
 
 end_time <- Sys.time()
-print(paste0("Runtime: ", end_time - start_time))
+print(paste0("Runtime: ", round(end_time - start_time, 2)))
 
-if(VERBOSE){cat("Process model outputs\n")}
+if(VERBOSE){cat("Processing model outputs\n")}
 
 # Write model outputs to file
 write.csv(dta, output_file, row.names = FALSE)

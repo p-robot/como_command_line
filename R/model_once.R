@@ -87,12 +87,12 @@ parameters_noise <- c("p", "rho", "omega", "gamma", "nui", "ihr_scaling","nus", 
                       "w2h", "s2h", "cocoon_eff", "mean_imports", "screen_overdispersion", 
                       "quarantine_effort", "quarantine_eff_home", "quarantine_eff_other")
 
-source("fun_validation_interventions.R")
-source("fun_inputs.R")
-source("fun_multi_runs.R")
-source("fun_process_ode_outcome.R")
-source("fun_process_ode_outcome_compute.R")
-#source("./www/model/fun_conf_interval.R")
-source("fun_check_parameters_list_for_na.R")
-source("fun_parse_age_group.R")
-source("fun_model_outputs.R")
+source("R/fun_validation_interventions.R")
+source("R/fun_inputs.R")
+source("R/fun_multi_runs.R")
+source("R/fun_process_ode_outcome.R")
+source("R/fun_process_ode_outcome_compute.R")
+source("R/fun_check_parameters_list_for_na.R")
+source("R/fun_parse_age_group.R")
+source("R/fun_model_outputs.R")
+

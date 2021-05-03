@@ -12,11 +12,9 @@ inputs <- function(inp, run, times, startdate, stopdate) {
   inp$`Date End` = pmax(startdate, as.Date(inp$`Date End`))
   
   inp <- inp %>% arrange(`Date Start`)
-  # print(inp)
   tv<-which(inp$`Apply to`==run)
   
   si<-intersect(which(inp$Intervention=="Self-isolation if Symptomatic"),tv)
-  print(si)
   scr<-intersect(which(inp$Intervention=="(*Self-isolation) Screening"),tv)
   sd<-intersect(which(inp$Intervention=="Social Distancing"),tv)
   hw<-intersect(which(inp$Intervention=="Handwashing"),tv)

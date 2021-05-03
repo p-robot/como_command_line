@@ -1,5 +1,3 @@
-print("model_repeat.R start")
-
 # Definitions of several variables ----
 popstruc <- population_rv$data %>% 
   select(age_category, pop) %>% 
@@ -20,8 +18,6 @@ ihr <- mort_sever_rv$data %>%
 ifr <- mort_sever_rv$data %>% 
   select(age_category, ifr) %>% 
   as.data.frame()
-
-
 
 # Complete contact Matrices ----
 c_home <- contact_home[[input$country_contact]] %>% as.matrix()
@@ -265,4 +261,3 @@ Y<-c(initS,initE,initI,initR,initX,initH,initHC,initC,initCM,initV, initQS, init
      initICUC, initICUCV, initVent, initVentC, initCMC,initZ, initEV, initER, initEVR, initVR, 
      initQV,initQEV,initQEVR,initQER,initQVR,initHCICU,initHCV,initAb) # initial conditions for the main solution vector
 
-print("model_repeat.R complete")
