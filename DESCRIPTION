@@ -1,0 +1,13 @@
+Package: como_command_line
+Title: Run the CoMo model from the command-line
+Version: 0.1
+Authors@R: person("Will", "Probert", email = "will@probert.co.nz",
+                  role = c("aut", "cre"))
+Description: Helper functions to run the CoMo model from the command line (i.e. not just through the Shiny App).  
+Depends: R (>= 3.1.0)
+License: Same as the CoMo model
+LazyData: true
+Imports:
+    comoOdeCpp,
+    deSolve
+RoxygenNote: 7.1.1
