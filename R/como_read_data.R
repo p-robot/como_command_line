@@ -220,7 +220,7 @@ simul_interventions$results <- NULL
 
 
 # Line 789 (app.R)
-source("model_repeat.R")
+source("R/model_repeat.R")
 parameters["iterations"] <- 1
 
 inp[["Target"]] <- 1:NROW(inp)
