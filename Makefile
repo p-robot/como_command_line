@@ -1,9 +1,13 @@
 
 
-test:
+test_run:
 	Rscript como_command_line.R \
-		"Egypt" \
-		"data/EGY_V17.2_AR11_E35C25.xlsx" \
-		"output/test_output.csv"
+		"United Kingdom of Great Britain" \
+		"tests/data/Template_CoMoCOVID-19App_v17.xlsx" \
+		"tests/COVID19_CLI_Data_Template_CoMoCOVID-19App_v17.csv"
 
 
+test_plot:
+	Rscript como_plot_output.R \
+		"output/test_output.csv" \
+		"output/figures/test_figure.png"

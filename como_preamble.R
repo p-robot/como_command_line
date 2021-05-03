@@ -13,6 +13,6 @@ suppressWarnings(suppressMessages(library(reshape2)))
 suppressWarnings(suppressMessages(library(deSolve)))
 suppressWarnings(suppressMessages(library(readxl)))
 suppressWarnings(suppressMessages(library(tidyverse)))
-#suppressWarnings(suppressMessages(library(comoOdeCpp)))
+suppressWarnings(suppressMessages(library(comoOdeCpp)))
 cat("Loaded packages\n")
 

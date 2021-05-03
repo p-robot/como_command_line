@@ -1,3 +1,5 @@
+print("model_repeat.R start")
+
 # Definitions of several variables ----
 popstruc <- population_rv$data %>% 
   select(age_category, pop) %>% 
@@ -18,6 +20,8 @@ ihr <- mort_sever_rv$data %>%
 ifr <- mort_sever_rv$data %>% 
   select(age_category, ifr) %>% 
   as.data.frame()
+
+
 
 # Complete contact Matrices ----
 c_home <- contact_home[[input$country_contact]] %>% as.matrix()
@@ -70,9 +74,8 @@ startdate <- input$date_range[1]
 stopdate <- input$date_range[2]
 times <- seq(0, as.numeric(stopdate - startdate))
 
-
 # Define parameters vector ----
-parameters <- reactiveValuesToList(input)[
+parameters <- input[
   c("p", "rho", "omega", "gamma", "nui", "report", "reportc", "reporth", 
     "beds_available", "icu_beds_available", "ventilators_available", 
     "pdeath_h", "pdeath_hc", "pdeath_icu", "pdeath_icuc", 
@@ -99,18 +102,17 @@ parameters <- reactiveValuesToList(input)[
     "reporth_g", "seroneg",
     "vaccine_eff_r", "pre",
     # addition in v17:
-    "init", "sample_size", "se", "sp"
+    "init", "sample_size", "se", "sp",
+    "phi"
   )] %>% 
   unlist()
-
 
 parameters <- c(
   parameters, 
   give = 95, 
   nusc = input$nus, 
   nu_icuc = input$nu_icu, 
-  nu_ventc = input$nu_vent, 
-  phi = which(month.name == input$phi))
+  nu_ventc = input$nu_vent)
 
 ihr[,2]<- parameters["ihr_scaling"]*ihr[,2]   
 
@@ -255,11 +257,12 @@ initS<-popstruc[,2]-initE-initI-initCL-initR-initX-initZ-initV-initH-initHC-init
 
 
 # Define dataframe of interventions ----
-inp <- bind_rows(interventions$baseline_mat %>% mutate(`Apply to` = "Baseline (Calibration)"),
-                 interventions$future_mat %>% mutate(`Apply to` = "Hypothetical Scenario")) %>%
-  rename(apply_to = `Apply to`)
+inp <- bind_rows(interventions$baseline_mat %>% mutate(apply_to = "Baseline (Calibration)"),
+                 interventions$future_mat %>% mutate(apply_to = "Hypothetical Scenario"))
 
 
 Y<-c(initS,initE,initI,initR,initX,initH,initHC,initC,initCM,initV, initQS, initQE, initQI, initQR, initCL, initQC, initICU, 
      initICUC, initICUCV, initVent, initVentC, initCMC,initZ, initEV, initER, initEVR, initVR, 
      initQV,initQEV,initQEVR,initQER,initQVR,initHCICU,initHCV,initAb) # initial conditions for the main solution vector
+
+print("model_repeat.R complete")

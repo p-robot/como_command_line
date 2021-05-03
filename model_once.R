@@ -1,8 +1,8 @@
 # Load Data.
-load(file = "./www/data/cases.Rda")
-load(file = "./www/data/contacts.Rda")
-load(file = "./www/data/demog.Rda")
-load(file = "./www/data/mort_sever_default.Rda")
+load(file = "data/cases.Rda")
+load(file = "data/contacts.Rda")
+load(file = "data/demog.Rda")
+load(file = "data/mort_sever_default.Rda")
 
 # Choices for dropdowns.
 countries_cases <- sort(unique(cases$country))
@@ -32,9 +32,6 @@ nb_interventions_max <- 100
 new_intervention_value <- "_"
 new_daterange_value <- c(as.Date("2020-02-10"), as.Date("2020-06-30"))
 new_coverage_value <- 0
-
-# highchart export options.
-hc_export_items <- c("downloadPNG", "downloadCSV", "downloadXLS")
 
 # Model elements that are independants of inputs ----
 A <- 21
@@ -90,11 +87,12 @@ parameters_noise <- c("p", "rho", "omega", "gamma", "nui", "ihr_scaling","nus", 
                       "w2h", "s2h", "cocoon_eff", "mean_imports", "screen_overdispersion", 
                       "quarantine_effort", "quarantine_eff_home", "quarantine_eff_other")
 
-source("./www/model/fun_validation_interventions.R")
-source("./www/model/fun_inputs.R")
-source("./www/model/fun_multi_runs.R")
-source("./www/model/fun_process_ode_outcome.R")
-source("./www/model/fun_process_ode_outcome_compute.R")
-source("./www/model/fun_conf_interval.R")
-source("./www/model/fun_check_parameters_list_for_na.R")
-source("./www/model/fun_parse_age_group.R")
+source("fun_validation_interventions.R")
+source("fun_inputs.R")
+source("fun_multi_runs.R")
+source("fun_process_ode_outcome.R")
+source("fun_process_ode_outcome_compute.R")
+#source("./www/model/fun_conf_interval.R")
+source("fun_check_parameters_list_for_na.R")
+source("fun_parse_age_group.R")
+source("fun_model_outputs.R")

@@ -1,6 +1,6 @@
 multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc, popbirth, ageing,
                        contact_home, contact_school, contact_work, contact_other,
-                       age_group_vectors){
+                       age_group_vectors, use_cpp){
   
   # Define objects to store results ----
   results <- list()
@@ -31,7 +31,7 @@ multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc,
   parameters_dup <- parameters  # duplicate parameters to add noise 
   
   for (i in 1:parameters["iterations"]) {
-    showNotification(paste("Run", i, "of", parameters["iterations"]))
+    #showNotification(paste("Run", i, "of", parameters["iterations"]))
     
     # Add noise to parameters only if there are several iterations
     if (parameters["iterations"] > 1) {
@@ -39,23 +39,34 @@ multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc,
         rnorm(length(parameters_noise), mean = 0, sd = parameters["noise"] * abs(parameters[parameters_noise]))
     }
     
-    covidOdeCpp_reset()
-    mat_ode <- ode(
-      y = Y, times = times, method = "euler", hini = 0.05,
-      func = covidOdeCpp, parms = parameters_dup,
-      input = input, A = A,
-      contact_home = contact_home,
-      contact_school = contact_school,
-      contact_work = contact_work,
-      contact_other = contact_other,
-      popbirth_col2 = popbirth[, 2],
-      popstruc_col2 = popstruc[, 2],
-      ageing = ageing,
-      ifr_col2 = ifr[, 2],
-      ihr_col2 = ihr[, 2],
-      mort_col = mort,
-      age_group_vectors = age_group_vectors
-    )
+    if(use_cpp){
+      covidOdeCpp_reset()
+      mat_ode <- ode(
+        y = Y, times = times, method = "euler", hini = 0.05,
+        func = covidOdeCpp, parms = parameters_dup,
+        input = input, A = A,
+        contact_home = contact_home,
+        contact_school = contact_school,
+        contact_work = contact_work,
+        contact_other = contact_other,
+        popbirth_col2 = popbirth[, 2],
+        popstruc_col2 = popstruc[, 2],
+        ageing = ageing,
+        ifr_col2 = ifr[, 2],
+        ihr_col2 = ihr[, 2],
+        mort_col = mort,
+        age_group_vectors = age_group_vectors
+      )
+    }else{
+      
+    # If using deSolve's ode() function:
+      print("Running with deSolve")
+    mat_ode <- ode(y = Y, times = times, method = "euler", hini = 0.05, 
+                 func = covid, parms = parameters, input = vectors)
+      print("Finished deSolve")
+    }
+    
+    
     aux[, , i] <- mat_ode
     
     # Use spline function
@@ -164,7 +175,7 @@ multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc,
   }
   
   if (parameters["iterations"] > 1) {
-    showNotification(HTML("Aggregation of results. <br>This step takes 5 to 15 minutes."), duration = NULL, id = "aggregation_results")
+    #showNotification(HTML("Aggregation of results. <br>This step takes 5 to 15 minutes."), duration = NULL, id = "aggregation_results")
     results$mean_infections <- apply(infections, 1, quantile, probs = 0.5)
     results$min_infections <- apply(infections, 1, quantile, probs = parameters["confidence"]/100)
     results$max_infections <- apply(infections, 1, quantile, probs = (1 - parameters["confidence"]/100))
@@ -186,7 +197,7 @@ multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc,
     results$min <- apply(aux, 1:2, quantile, probs = parameters["confidence"]/100)
     results$max <- apply(aux, 1:2, quantile, probs = (1 - parameters["confidence"]/100))
 
-    removeNotification(id = "aggregation_results")
+    #removeNotification(id = "aggregation_results")
   }
   return(results)
 }

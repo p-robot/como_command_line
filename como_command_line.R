@@ -1,35 +1,58 @@
 #!/usr/bin/env Rscript
 
+VERBOSE <- TRUE
+USE_CPP <- FALSE
 
 ##########
 # PREAMBLE
 # --------
-
+if(VERBOSE){cat("Loading packages and functions\n")}
 source("como_preamble.R")
+source("model_once.R")
 source("como_functions.R")
 
 ###################
 # COMMAND-LINE ARGS
 # -----------------
 
-args <- commandArgs(trailingOnly=TRUE)
+if(VERBOSE){cat("Read command-line args\n")}
+args <- commandArgs(trailingOnly = TRUE)
 
 # Parse command-line arguments
 country_name <- args[1]
 file_path <- args[2]
 output_file <- args[3]
 
-source("como_read_data.R")
+###################
+# LOAD non-CPP function
+# -----------------
 
-out0 <- ode(y = Y, times = times, method = "euler", hini = 0.05, func = covid, parms = parameters, input=vectors0)
+if(!USE_CPP){
+  if(VERBOSE){cat("Loading functions for deSolve\n")}
+  source("como_read_data.R")
+  source("fun_covid.R")
+}
 
-simul_interventions <- process_ode_outcome(out_mean = out0, intv_vector = vectors0, param_used = parameters, iterations = 1)
-write.csv(simul_interventions, output_file)
+###################
+# RUN THE MODEL
+# -----------------
 
-simul_interventions$time <- as.Date(simul_interventions$time)
+start_time <- Sys.time()
+if(VERBOSE){cat("Running the model\n")}
 
-p <- ggplot(as.data.frame(simul_interventions), aes(x = time, y = N)) + 
-    geom_line()
+# Load CoMo template
+list_template <- load_template(file_path, country_name, USE_CPP)
 
-ggsave("test_output.pdf", p)
+# Run the model
+list_output <- run_model(list_template)
 
+# Process model outputs
+dta <- process_outputs(list_output, list_template)
+
+end_time <- Sys.time()
+print(paste0("Runtime: ", end_time - start_time))
+
+if(VERBOSE){cat("Process model outputs\n")}
+
+# Write model outputs to file
+write.csv(dta, output_file, row.names = FALSE)

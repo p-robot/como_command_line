@@ -73,18 +73,18 @@ process_ode_outcome <- function(out, param_used, startdate, times, ihr, ifr, mor
   
   ab$Ab <- (param_used["se"]/100) * aux + (1 - (param_used["sp"]/100))*(1 - aux)
   
-  quantile_ab <- ab %>%
-    group_by(Time) %>%
-    summarise(tibble(
-      q05 = quantile(Ab, probs = 0.05), 
-      q25 = quantile(Ab, probs = 0.25), 
-      q50 = median(Ab),
-      q75 = quantile(Ab, probs = 0.75), 
-      q95 = quantile(Ab, probs = 0.95))
-    )
+#   quantile_ab <- ab %>%
+#     group_by(Time) %>%
+#     summarise(tibble(
+#       q05 = quantile(Ab, probs = 0.05), 
+#       q25 = quantile(Ab, probs = 0.25), 
+#       q50 = median(Ab),
+#       q75 = quantile(Ab, probs = 0.75), 
+#       q95 = quantile(Ab, probs = 0.95))
+#     )
   
   results$seroprevalence <- ab
-  results$seroprevalence_quantile <- quantile_ab
+#   results$seroprevalence_quantile <- quantile_ab
   
   return(results)
 }
