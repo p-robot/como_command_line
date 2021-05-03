@@ -2,8 +2,8 @@
 # https://github.com/ocelhay/como/blob/1b61938191d9f63d512a3aaec9f5271a3ca0ed5a/misc/scripts/covidage_v16.7.R
 
 # set up a function to solve the equations
-covid<-function(t, Y, parameters, input){
-  
+covid <- function(t, Y, parameters, input, age_group_vectors){
+    
   f <- c(1,(1+parameters["give"])/2,(1-parameters["give"])/2,0)
   KH<-parameters["beds_available"]
   KICU<- parameters["icu_beds_available"]+parameters["ventilators_available"]
@@ -114,7 +114,6 @@ covid<-function(t, Y, parameters, input){
          tests_per_day<-(input$mt_vector[t*20+1])
          vaccineage<-input$vaccineage[t*20+1]
          testage<-input$testage[t*20+1]
-         
          if (vaccine){
            age_vaccine_vector<-as.numeric(age_group_vectors[[vaccineage]])
            vac_rate<-(-log(1-vaccine_cov)/vac_campaign)

@@ -60,8 +60,10 @@ multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc,
     }else{
       
         # If using deSolve's ode() function:
+        
         mat_ode <- ode(y = Y, times = times, method = "euler", hini = 0.05, 
-            func = covid, parms = parameters_dup, input = input)
+            func = covid, parms = parameters_dup, input = input, 
+            age_group_vectors = age_group_vectors)
     }
     
     aux[, , i] <- mat_ode
