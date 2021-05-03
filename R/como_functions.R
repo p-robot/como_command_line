@@ -12,10 +12,9 @@
 #'     template = "tests/data/Template_CoMoCOVID-19App_v17.xlsx",
 #'     country_name = "United Kingdom of Great Britain")
 load_template <- function(template, country_name, USE_CPP = FALSE){
-  print("load_template() start")
-  
+
   file_path <- template
-  source("como_read_data.R")
+  source("R/como_read_data.R")
   
   list_template <- list(
       Y = Y, 
@@ -40,7 +39,6 @@ load_template <- function(template, country_name, USE_CPP = FALSE){
       interventions = interventions,
       use_cpp = USE_CPP
   )
-  print("load_template() complete")
   return(list_template)
 }
 
@@ -75,7 +73,6 @@ run_model <- function(list_template){
 
 # Function to turn output from run_model into dataframe
 process_outputs <- function(list_output, list_template){
-  print("process_outputs start")
   l <- list_template
   
   simul_baseline <- list(results = NULL)
@@ -94,7 +91,6 @@ process_outputs <- function(list_output, list_template){
   simul_baseline$baseline_available <- TRUE
 
   dta <- model_outputs(l$input, simul_baseline, l$cases_rv, l$interventions, l)
-  print("process_outputs complete")
   return( dta )
 }
 
