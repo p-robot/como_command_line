@@ -3,7 +3,7 @@
 
 # set up a function to solve the equations
 covid <- function(t, Y, parameters, input, age_group_vectors){
-    
+
   f <- c(1,(1+parameters["give"])/2,(1-parameters["give"])/2,0)
   KH<-parameters["beds_available"]
   KICU<- parameters["icu_beds_available"]+parameters["ventilators_available"]
@@ -52,6 +52,14 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
          HCICU <- Y[HCICUindex]
          HCV <- Y[HCVindex]
          Ab <- Y[Abindex]
+         
+         # Added in como_command_line
+         # Adjust p based upon variant
+         if( exists("date_range_variant_start") & exists("new_variant_p_multiplier") ){
+           if( t > date_range_variant_start ){
+             p <- p*new_variant_p_multiplier
+           }
+         }
          
          P <- (S+E+I+R+X+Z+V+H+HC+ICU+ICUC+ICUCV+Vent+VentC+EV+ER+EVR+VR+HCICU+HCV+
                  QS+QE+QI+QR+CL+QC+QEV+QV+QER+QEVR+QVR)

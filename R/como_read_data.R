@@ -121,6 +121,7 @@ population_rv$data <- dta %>%
     transmute(country = NA, age_category, pop, birth, death)
 
 
+
 # Parameters Sheets
 param <- bind_rows(read_excel(file_path, sheet = "Parameters"),
                    read_excel(file_path, sheet = "Country Area Param"),
@@ -129,6 +130,20 @@ param <- bind_rows(read_excel(file_path, sheet = "Parameters"),
                    read_excel(file_path, sheet = "Interventions Param")) %>%
   mutate(Value_Date = as.Date(Value_Date)) %>%
   drop_na(Parameter)
+
+
+# Extra Parameters sheet (if exists)
+if( "Extra Param" %in% excel_sheets(file_path) ){
+  cat("Reading Extra Param sheet\n")
+  extra_param <- read_excel(file_path, sheet = "Extra Param") %>%
+      mutate(Value_Date = as.Date(Value_Date)) %>%
+      drop_na(Parameter)
+  
+  startdate <- param$Value_Date[param$Parameter == "date_range_simul_start"]
+  extra_param$Value[extra_param$Parameter == "date_range_variant_start"]  <- as.numeric(extra_param$Value_Date[extra_param$Parameter == "date_range_variant_start"] - startdate)
+  
+  param <- bind_rows(param, extra_param)
+}
 
 
 # Construct "input" list
@@ -233,7 +248,6 @@ vectors <- inputs(inp, 'Baseline (Calibration)', times, startdate, stopdate)
 vectors$vc_vector[which(vectors$vc_vector == 100)] <- 99
 
 check_parameters_list_for_na(parameters_list = parameters)
-
 
 # # Line 1 (model_repeat.R)
 # # Definitions of several variables ----

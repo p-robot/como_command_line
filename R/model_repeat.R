@@ -99,7 +99,9 @@ parameters <- input[
     "vaccine_eff_r", "pre",
     # addition in v17:
     "init", "sample_size", "se", "sp",
-    "phi"
+    "phi",
+    # addition from como_command_line
+    "new_variant_p_multiplier", "date_range_variant_start"
   )] %>% 
   unlist()
 
