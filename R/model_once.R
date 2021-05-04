@@ -28,7 +28,7 @@ vec_age_categories <- c("1 = 0-5 y.o.", "2 = 5-10 y.o.", "3 = 10-15 y.o.",
 real_interventions <- setdiff(all_interventions, c("_", "(*Self-isolation) Household Isolation", "(*Self-isolation) Screening"))
 
 # Default values for interventions.
-nb_interventions_max <- 100
+nb_interventions_max <- 200
 new_intervention_value <- "_"
 new_daterange_value <- c(as.Date("2020-02-10"), as.Date("2020-06-30"))
 new_coverage_value <- 0
