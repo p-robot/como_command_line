@@ -56,19 +56,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
          P <- (S+E+I+R+X+Z+V+H+HC+ICU+ICUC+ICUCV+Vent+VentC+EV+ER+EVR+VR+HCICU+HCV+
                  QS+QE+QI+QR+CL+QC+QEV+QV+QER+QEVR+QVR)
          Q <- (sum(QS)+sum(QE)+sum(QI)+sum(QC)+sum(QR)+sum(QV)+sum(QER)+sum(QEVR)+sum(QEV)+sum(QVR))/sum(P)
-         # print(HCICUindex)
-         # print(sum(ER))
-         # print(t)
-         # print(paste("EVR",sum(QE)))
-         # print(paste("ER",sum(QR)))
-         # print(paste("QER",sum(QER)))
-         # print(paste("QEVR",sum(QEVR)))
-         # print(paste("QV",sum(QV)))
-         # print(paste("QC",sum(QC)))
-         # print(paste("QI",sum(QI)))
-         # print(paste("QEV",sum(QV)))
-         # print(paste("QE",sum(QC)))
-         # print(paste("QR",sum(QR)))
          # health system performance
          critH<-min(1-fH(sum(H)+sum(ICUC)+sum(ICUCV)),1)
          crit<-min(1-fICU(sum(ICU)+sum(Vent)+sum(VentC)),1)
@@ -119,7 +106,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
            vac_rate<-(-log(1-vaccine_cov)/vac_campaign)
            vaccinate<-vac_rate
          }else{age_vaccine_vector<-rep(0,A)}
-         # print(vaccinate*age_vaccine_vector)
          if (masstesting){
            age_testing_vector<-as.numeric(age_group_vectors[[testage]])
          }else{age_testing_vector<-rep(0,A)}
@@ -136,8 +122,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
            school<-school_eff
            schoolclose2<-as.numeric(age_group_vectors[[schoolclose]])
          }else{schoolclose2<-0}
-         # print(schoolclose2)
-         # print(schoolclose)
          if(distancing){
            dist<-dist_cov*dist_eff
          }
@@ -160,13 +144,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
          }else{
            dexo2<-1;dexo2c<-1;dexv<-1;dexvc<-1;prob_v<-prob_vent;
          }
-         # print(paste(dexo2,dexo2c,dexv,dexvc,prob_v))
-         # print(paste("quarantine_rate",quarantine_rate))
-         # print(quarantine_rate*sum(R))
-         # print(quarantine_rate*ER)
-         # 
-         # print(sum(vaccinate*age_vaccine_vector*R))
-         # print((1/quarantine_days)*sum(QR))
          
          # testing rates
          propI<-sum(I)/sum(P)
@@ -190,23 +167,18 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
          
          if(sum(I)>1){
            ratetestI<-mass_test_sens*testI/sum(I)
-           # print(paste('rateI: ',ratetestI))
          }else{ratetestI<-0}
          if(sum(CL)>1){
            ratetestC<-mass_test_sens*testC/sum(CL)
-           # print(paste('rateC: ',ratetestC))
          }else{ratetestC<-0}
-         # print(sum(E))
          if(sum(E)>1){
            ratetestE<-mass_test_sens*testE/sum(E)
          }else{ratetestE<-0}
          if(sum(EV)>1){
            ratetestEV<-mass_test_sens*testEV/sum(EV)
-           # print(paste('rateEV: ',ratetestEV))
          }else{ratetestEV<-0}
          if(sum(ER)>1){
            ratetestER<-mass_test_sens*testER/sum(ER)
-           # print(paste('rateER: ',ratetestER))
          }else{ratetestER<-0}
          if(sum(EVR)>1){
            ratetestEVR<-mass_test_sens*testEVR/sum(EVR)
@@ -221,12 +193,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
            ratetestHCV<-mass_test_sens*testHCV/sum(HCV)
          }else{ratetestHCV<-0}
          
-         # print(mass_test_sens)
-         # print(ratetestI*sum(I) + ratetestC*sum(CL) - (1/isolation_days)*sum(Z) )
-         # print(propC)
-         # print(testI)
-         # print(testC)
-         # 
          # cocooning the elderly
          cocoon_mat<-matrix((1-cocoon_eff),nrow = length(popstruc$pop),ncol = length(popstruc$pop))
          cocoon_mat[1:(age_cocoon-1),1:(age_cocoon-1)]<-1
@@ -253,10 +219,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
          # contacts under home quarantine
          lamq<-(1-max(hand,mask))*p*seas*((1-quarantine_eff_home)*contact_home%*%(((1-selfis_eff)*(X+HHC+rho*QE+QI+QC++QEV+QEVR+QER))/P))+
            (1-max(hand,mask))*p*seas*(1-quarantine_eff_other)*(contact_other%*%((rho*E+(I+CL+importation)+(1-selfis_eff)*(X+HHC+rho*QE+QI+QC++QEV+QEVR+QER)+rhos*(HH))/P))
-         # lamq<-0
-         # print(paste("lamq",lamq))
-         # print(paste("lamq",(1-vaccine_eff_r)*lamq*sum(QVR) ))
-         # print(paste("quarantine evr",quarantine_rate*sum(EVR) ))
          
          # birth/death
          b1<-sum(popbirth[,2]*popstruc[,2])
@@ -414,8 +376,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
            gamma*reporth_ICU*sigmaER*ihr[,2]*prob_icu_r*prob_v_r*(1-crit)*critV*QER - 
            (1-critV)*VentC*1/2 -nu_ventc*VentC +ageing%*%VentC - mort*VentC 
          
-         # print(paste(t,dexo2,propo2))
-         # print(sum(nus*propo2*dexo2*pdeath_ho*ifr[,2]*H))
          dCdt <- report*gamma*(1-age_testing_vector*ratetestE)*(1-pclin)*(1-ihr[,2])*(E+QE)+reportc*gamma*pclin*(1-age_testing_vector*ratetestE)*(1-ihr[,2])*(E+QE)+
            gamma*ihr[,2]*(1-critH)*(1-prob_icu)*(E+QE)+gamma*ihr[,2]*critH*reporth*(1-prob_icu)*(E+QE)+
            gamma*ihr[,2]*prob_icu*(E+QE)+ratetestI*age_testing_vector*I+ratetestC*age_testing_vector*CL+gamma*age_testing_vector*ratetestE*(1-ihr[,2])*E
@@ -461,8 +421,6 @@ covid <- function(t, Y, parameters, input, age_group_vectors){
            nu_ventc*(1-dexvc*pdeath_ventc)*ifr[,2]*VentC+
            nu_ventc*(1-dexvc*pdeath_ventc)*ifr[,2]*ICUCV - 
            seroneg*Ab - mort*Ab + ageing%*%Ab
-         
-         # print(paste("QEVR",sum(QEVR)))
          
          # return the rate of change
          list(c(S=dSdt,dEdt,dIdt,dRdt,dXdt,dHdt,dHCdt,dCdt,dCMdt,dVdt,dQSdt,dQEdt,dQIdt,dQRdt,dCLdt,dQCdt,dICUdt,dICUCdt,dICUCVdt,
