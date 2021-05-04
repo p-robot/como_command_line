@@ -5,14 +5,9 @@
 Sys.setenv(TZ="Europe/London")
 
 suppressWarnings(suppressMessages(library(ggplot2)))
-#suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(reshape2)))
-#suppressWarnings(suppressMessages(library(gridExtra)))
-#suppressWarnings(suppressMessages(library(ggpubr)))
-#suppressWarnings(suppressMessages(library(bsplus)))
 suppressWarnings(suppressMessages(library(deSolve)))
 suppressWarnings(suppressMessages(library(readxl)))
 suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(comoOdeCpp)))
 cat("Loaded packages\n")
-
