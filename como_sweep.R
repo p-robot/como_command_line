@@ -1,7 +1,19 @@
 #!/usr/bin/env Rscript
 
 VERBOSE <- TRUE
-USE_CPP <- FALSE
+USE_CPP <- TRUE
+
+###################
+# COMMAND-LINE ARGS
+# -----------------
+
+if(VERBOSE){cat("Read command-line args\n")}
+args <- commandArgs(trailingOnly = TRUE)
+
+# Parse command-line arguments
+country_name <- args[1]
+file_path <- args[2]
+output_file_stub <- args[3]
 
 ###################
 # RUN THE MODEL
@@ -9,10 +21,9 @@ USE_CPP <- FALSE
 
 if(VERBOSE){cat("Running the model\n")}
 
-output_file_stub <- "output-JOR_p"
-
-for(reportc in seq(0.3, 0.4, 0.01) ){
-for(p in seq(0.03, 0.05, 0.001) ){
+for(ihr_scaling in seq(2.0, 3.0, 0.2)){
+for(reportc in seq(0.3, 0.4, 0.02) ){
+for(p in seq(0.015, 0.035, 0.005) ){
     
     if(VERBOSE){cat("Loading packages and functions\n")}
     source("R/como_preamble.R")
@@ -28,6 +39,7 @@ for(p in seq(0.03, 0.05, 0.001) ){
     list_template <- load_template(file_path, country_name, USE_CPP)
     list_template$parameters["p"] <- p
     list_template$parameters["reportc"] <- reportc
+    list_template$parameters["ihr_scaling"] <- ihr_scaling
     
     # Run the model
     list_output <- run_model(list_template)
@@ -40,6 +52,7 @@ for(p in seq(0.03, 0.05, 0.001) ){
     dta$reportc <- reportc
     
     # Write model outputs to file
-    write.csv(dta, paste0(output_file_stub, p, "_reportc", reportc, ".csv"), row.names = FALSE)
+    write.csv(dta, paste0(output_file_stub, p, "_reportc", reportc, "_ihr_scaling", ihr_scaling, ".csv"), row.names = FALSE)
+}
 }
 }
