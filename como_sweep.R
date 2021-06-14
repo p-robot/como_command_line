@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 VERBOSE <- TRUE
-USE_CPP <- TRUE
+USE_CPP <- FALSE
 
 ###################
 # COMMAND-LINE ARGS
@@ -21,9 +21,9 @@ output_file_stub <- args[3]
 
 if(VERBOSE){cat("Running the model\n")}
 
-for(ihr_scaling in seq(2.0, 3.0, 0.2)){
-for(reportc in seq(0.3, 0.4, 0.02) ){
-for(p in seq(0.015, 0.035, 0.005) ){
+for(ihr_scaling in seq(2.2, 2.8, 0.1)){
+for(reportc in seq(0.3, 0.4, 0.05) ){
+for(p in seq(0.0279, 0.0279, 0.0001) ){
     
     if(VERBOSE){cat("Loading packages and functions\n")}
     source("R/como_preamble.R")
@@ -32,6 +32,7 @@ for(p in seq(0.015, 0.035, 0.005) ){
     source("R/fun_covid.R") # solution function for deSolve (no CPP)
     
     print("---------------")
+    print(paste0("ihr_scaling: ", ihr_scaling))
     print(paste0("reportc: ", reportc))
     print(paste0("p: ", p))
     
@@ -50,6 +51,7 @@ for(p in seq(0.015, 0.035, 0.005) ){
     if(VERBOSE){cat("Processing model outputs\n")}
     dta$p <- p
     dta$reportc <- reportc
+    dta$ihr_scaling <- ihr_scaling
     
     # Write model outputs to file
     write.csv(dta, paste0(output_file_stub, p, "_reportc", reportc, "_ihr_scaling", ihr_scaling, ".csv"), row.names = FALSE)
