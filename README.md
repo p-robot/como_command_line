@@ -9,16 +9,21 @@ Requirements
 
 Tests were run on R version 4.1.0.  For the CPP version of the solver (much faster), one needs to install the comoOdeCpp package, version 16.6.0.  From within R, this can be installed like so: 
 
-```R
-library(devtools)
-install_github("bogaotory/comoOdeCpp@v16.6.0", subdir="comoOdeCpp")
+```bash
+# Make personal library for R packages if necessary
+mkdir "~/R/x86_64-pc-linux-gnu-library/4.1"
+
+R -e 'library(devtools); install_github("bogaotory/comoOdeCpp@v16.6.0", subdir="comoOdeCpp")'
 ```
 
 
 Usage
 -----
 
-
+The main script `como_command_line.R` can be called from a terminal like so: 
+```bash
+Rscript como_command_line.R <country_name> <template_path> <output_file>
+```
 
 
 Tests
