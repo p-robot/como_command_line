@@ -184,7 +184,7 @@ vec <- interventions$baseline_mat$age_group
 if(length(vec) > 0) {
   for (i in 1:length(vec)) {
     if(is.na(vec[i])){
-      interventions$baseline_age_groups[[i]] <- "1-21"
+      interventions$baseline_age_groups[[i]] <- parse_age_group("1-21")
     }else{
       interventions$baseline_age_groups[[i]] <- parse_age_group(vec[i])
     }
@@ -205,7 +205,7 @@ if(nb_interventions_baseline > 0) {
     input[[paste0("baseline_coverage_", i)]]  = c(value = interventions_excel_baseline[[i, "value"]])
     
     if( is.na(interventions_excel_baseline$age_group[i]) ){
-      input[[paste0("baseline_age_group_", i)]] = "1-21"
+      input[[paste0("baseline_age_group_", i)]] = parse_age_group("1-21")
     }else{
       input[[paste0("baseline_age_group_", i)]] = vec_age_categories[parse_age_group(interventions_excel_baseline$age_group[i])]
     }
