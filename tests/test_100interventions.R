@@ -33,7 +33,7 @@ df_app <- read.csv(app_file)
 cols2check <- names(df_app)[grepl("baseline", names(df_app))]
 
 ###########################
-# RUN THE MODEL WITHOUT CPP
+# RUN THE MODEL WITH CPP
 # -------------------------
 source("R/como_preamble.R")
 source("R/model_once.R")
