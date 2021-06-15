@@ -1,5 +1,7 @@
 # Script to run a sequential ABC algorithm
 
+library(truncnorm)
+
 # Read observed data (p = 0.0245)
 df_obs <- read.csv("tests/data/COVID19_App_Data_Template_CoMoCOVID-19App_v17_p0.0245.csv")
 
@@ -9,8 +11,8 @@ output_dir <- "tests/data/"
 
 n_params <- 1		# Number of parameters
 N <- 500		# Number of particles to accept
-T <- 5			# Number of populations
-q <- 0.9		# Quantile defining epsilon
+T <- 10			# Number of populations
+epsilon_quantile <- 0.3	# Quantile defining epsilon
 
 USE_CPP <- TRUE
 
@@ -28,7 +30,7 @@ file_path <- "tests/data/Template_CoMoCOVID-19App_v17.xlsx"
 country_name <- "United Kingdom of Great Britain"
 
 sse <- function(obs, sim){
-	return(sum(sqrt((obs - sim)**2)))
+	return(sum((obs - sim)**2))
 }
 
 start_time <- Sys.time()
@@ -40,7 +42,7 @@ for( t in 1:T ){
 		source("R/como_preamble.R")
 		source("R/model_once.R")
 		source("R/como_functions.R")
-		source("R/fun_covid.R")
+		#source("R/fun_covid.R")
 		
 		# Load the template file
 		list_template <- load_template(file_path, country_name, USE_CPP)
@@ -54,7 +56,7 @@ for( t in 1:T ){
 			
 		}else{
 			params_star_star <- c(-1)
-			while(params_star_star < 0 | params_star_star > 0.2){ # FIXME
+			while(params_star_star < 0 | params_star_star > 0.2){
 				param_idx <- sample(seq(1, N), 1 , prob = weights_prev)
 				params <- params_prev[param_idx]
 				params_star_star <- params + rnorm(1, 0, sigma) # FIXME
@@ -79,7 +81,14 @@ for( t in 1:T ){
 			params_current[n_accepted] <- params_star_star
 			
 			# Calculate weights
-			weights_current[n_accepted] <- 1/N # FIXME
+			if( t == 1 ){
+				weights_current[n_accepted] <- 1
+			}else{
+				numerator <- dunif(params_star_star, min = 0, max = 0.2)
+				denominator <- sum(weights_prev * dtruncnorm(param_star_star, mean = params_prev, sigma = sigma, a = 0, b = 0.2))
+				if(denominator == 0){ cat("Denominator zero!\n")}
+				weights_current[n_accepted] <- numerator/denominator
+			}
 			
 			# Save distance
 			dist_current[n_accepted] <- dist
@@ -94,7 +103,7 @@ for( t in 1:T ){
 	params_prev <- params_current
 	
 	weights_prev <- weights_current / sum(weights_current)
-	epsilons[t + 1] <- quantile(dist_current, probs = 0.9)
+	epsilons[t + 1] <- quantile(dist_current, probs = epsilon_quantile)
 	
 	# Save population t
 	write.csv(params_current, file.path(output_dir, paste0("params_t", t, ".csv")), row.names = F)
