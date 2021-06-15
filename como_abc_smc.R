@@ -8,11 +8,11 @@ output_dir <- "tests/data/"
 # ABC parameters
 
 n_params <- 1	# Number of parameters
-N <- 100		# Number of particles to accept
+N <- 500		# Number of particles to accept
 T <- 5			# Number of populations
 q <- 0.9		# Quantile defining epsilon
 
-USE_CPP <- FALSE
+USE_CPP <- TRUE
 
 # Allocate memory to store parameters and weights
 params_current <- matrix(NA, nrow = N, ncol = n_params)
@@ -32,7 +32,7 @@ sse <- function(obs, sim){
 }
 
 
-for( t in 1:3 ){
+for( t in 1:T ){
 	n_accepted <- 0
 	
 	while( n_accepted < N ){

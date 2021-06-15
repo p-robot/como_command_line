@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 VERBOSE <- TRUE
-USE_CPP <- FALSE
+USE_CPP <- TRUE
 
 ##########
 # PREAMBLE
