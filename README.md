@@ -25,6 +25,13 @@ The main script `como_command_line.R` can be called from a terminal like so:
 Rscript como_command_line.R <country_name> <template_path> <output_file>
 ```
 
+On cluster systems, such as AWS Lightsail, the script can be set running using: 
+
+```bash
+nohup Rscript como_abc_smc.R > abc.log 2> abc.err &
+```
+Sending output to `abc.log` and error to `abc.err`.  
+
 
 Tests
 -----
