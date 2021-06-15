@@ -1,24 +1,18 @@
 # Script to run a sequential ABC algorithm
 
-# Read observed data
+# Read observed data (p = 0.0245)
+df_obs <- read.csv("tests/data/COVID19_App_Data_Template_CoMoCOVID-19App_v17_p0.0245.csv")
+
+output_dir <- "tests/data/"
 
 # ABC parameters
 
-n_params <- 2	# Number of parameters
-N <- 100	# Number of particles to accept
-T <- 5 		# Number of populations
-q <- 0.9	# Quantile defining epsilon
+n_params <- 1	# Number of parameters
+N <- 100		# Number of particles to accept
+T <- 5			# Number of populations
+q <- 0.9		# Quantile defining epsilon
 
-# Priors
-# Starting date
-
-# p
-
-USE_CPP <- TRUE
-source("R/como_preamble.R")
-source("R/model_once.R")
-source("R/como_functions.R")
-
+USE_CPP <- FALSE
 
 # Allocate memory to store parameters and weights
 params_current <- matrix(NA, nrow = N, ncol = n_params)
@@ -26,14 +20,27 @@ params_prev <- matrix(NA, nrow = N, ncol = n_params)
 weights_current <- rep(NA, times = N)
 weights_prev <- rep(NA, times = N)
 
+dist_current <- rep(NA, times = N)
+epsilons <- c(Inf, rep(NA, times = T-1))
+
 # Define the location of the base template
-file_path <- ""
+file_path <- "tests/data/Template_CoMoCOVID-19App_v17.xlsx"
 country_name <- "United Kingdom of Great Britain"
 
-for( t in 1:T ){
-	n_accepted <- 0
-	while( n_accepted <= N ){
+sse <- function(obs, sim){
+	return(sum(sqrt((obs - sim)**2)))
+}
 
+
+for( t in 1:3 ){
+	n_accepted <- 0
+	
+	while( n_accepted < N ){
+		source("R/como_preamble.R")
+		source("R/model_once.R")
+		source("R/como_functions.R")
+		source("R/fun_covid.R")
+		
 		# Load the template file
 		list_template <- load_template(file_path, country_name, USE_CPP)
 		
@@ -42,27 +49,56 @@ for( t in 1:T ){
 		# previous population
 		if( t == 1 ){
 			
-		}else{
+			params_star_star <- runif(1, min = 0, max = 0.2)	# Prob. of infection given contact
 			
+		}else{
+			params_star_star <- c(-1)
+			while(params_star_star > 0 & params_star_star < 0.2){ # FIXME
+				param_idx <- sample(seq(1, N), 1 , prob = weights_prev)
+				params <- params_prev[param_idx]
+				params_star_star <- params + rnorm(1, 0, sigma) # FIXME
+			}
 		}
+		list_template$parameters["p"] <- params_star_star
 
 		# Simulate using the sampled parameters
 		list_output <- run_model(list_template)
-		df_output <- process_outputs(list_output, list_template)
+		df_sim <- process_outputs(list_output, list_template)
 		
 		# Calculate distance
-		dist <- 10
-
+		dist <- sse(df_sim$baseline_predicted_reported_and_unreported_med, 
+					df_obs$baseline_predicted_reported_and_unreported_med)
+		
 		# Check distance
-		if( dist < epsilon[t] ){
+		if( dist < epsilons[t] ){
+			# Updated counter of accepted particles
+			n_accepted <- n_accepted + 1
+			
 			# Save parameter values
-
+			params_current[n_accepted] <- params_star_star
+			
 			# Calculate weights
-
+			weights_current[n_accepted] <- 1/N # FIXME
+			
+			# Save distance
+			dist_current[n_accepted] <- dist
+			
+			cat("Population", t, " | ")
+			cat("Accepted particles: ", n_accepted, "/", N, " | ")
+			cat("Dist: ", dist, " | ")
+			cat("p: ", params_star_star, "\n")
 		}
-
 	}
-	# Save population t
-	# Save weights
+	sigma <- sqrt(var(params_current))
+	params_prev <- params_current
 	
+	weights_prev <- weights_current / sum(weights_current)
+	
+	epsilon[t + 1] <- quantile(dist_current, probs = 0.9)
+	
+	# Save population t
+	write.csv(params_current, file.path(output_dir, paste0("params_t", t, ".csv")), row.names = F)
+	
+	# Save weights
+	write.csv(weights_current, file.path(output_dir, paste0("weights_t", t, ".csv")), row.names = F)
 }
