@@ -7,7 +7,7 @@ output_dir <- "tests/data/"
 
 # ABC parameters
 
-n_params <- 1	# Number of parameters
+n_params <- 1		# Number of parameters
 N <- 500		# Number of particles to accept
 T <- 5			# Number of populations
 q <- 0.9		# Quantile defining epsilon
@@ -31,6 +31,7 @@ sse <- function(obs, sim){
 	return(sum(sqrt((obs - sim)**2)))
 }
 
+start_time <- Sys.time()
 
 for( t in 1:T ){
 	n_accepted <- 0
@@ -53,7 +54,7 @@ for( t in 1:T ){
 			
 		}else{
 			params_star_star <- c(-1)
-			while(params_star_star > 0 & params_star_star < 0.2){ # FIXME
+			while(params_star_star < 0 | params_star_star > 0.2){ # FIXME
 				param_idx <- sample(seq(1, N), 1 , prob = weights_prev)
 				params <- params_prev[param_idx]
 				params_star_star <- params + rnorm(1, 0, sigma) # FIXME
@@ -93,12 +94,14 @@ for( t in 1:T ){
 	params_prev <- params_current
 	
 	weights_prev <- weights_current / sum(weights_current)
-	
-	epsilon[t + 1] <- quantile(dist_current, probs = 0.9)
+	epsilons[t + 1] <- quantile(dist_current, probs = 0.9)
 	
 	# Save population t
 	write.csv(params_current, file.path(output_dir, paste0("params_t", t, ".csv")), row.names = F)
 	
 	# Save weights
 	write.csv(weights_current, file.path(output_dir, paste0("weights_t", t, ".csv")), row.names = F)
+
+	# Print timing
+	cat("TIME: ", Sys.time() - start_time)
 }
