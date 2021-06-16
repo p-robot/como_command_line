@@ -11,7 +11,7 @@ output_dir <- "tests/data/"
 
 n_params <- 1		# Number of parameters
 N <- 500		# Number of particles to accept
-T <- 10			# Number of populations
+T <- 5			# Number of populations
 epsilon_quantile <- 0.3	# Quantile defining epsilon
 
 USE_CPP <- TRUE
@@ -85,7 +85,7 @@ for( t in 1:T ){
 				weights_current[n_accepted] <- 1
 			}else{
 				numerator <- dunif(params_star_star, min = 0, max = 0.2)
-				denominator <- sum(weights_prev * dtruncnorm(param_star_star, mean = params_prev, sigma = sigma, a = 0, b = 0.2))
+				denominator <- sum(weights_prev * dtruncnorm(params_star_star, mean = params_prev, sd = sigma, a = 0, b = 0.2))
 				if(denominator == 0){ cat("Denominator zero!\n")}
 				weights_current[n_accepted] <- numerator/denominator
 			}
