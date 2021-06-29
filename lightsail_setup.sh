@@ -1,4 +1,9 @@
-pt-get update -y
+#!/bin/sh
+# 
+# Set-up script for running common numerical computing languages
+# on Amazon's AWS Lightsail.  
+
+apt-get update -y
 
 apt-get install r-base -y
 apt-get install r-cran-ggplot2 r-cran-tidyverse r-cran-desolve -y
