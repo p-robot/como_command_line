@@ -50,10 +50,12 @@ como_lhs_list <- function(nsamples, param_list){
 
 if( !interactive() ){
 	args <- commandArgs(trailingOnly = TRUE)
-	parameter_file <- args[1]
-	n_samples <- as.integer(args[2])
-	output_csv <- args[3]
+	seed <- as.integer(args[1])
+	parameter_file <- args[2]
+	n_samples <- as.integer(args[3])
+	output_csv <- args[4]
 
+	set.seed(seed)
 	df_params <- read.csv(parameter_file, stringsAsFactors = FALSE)
 
 	lhs <- como_lhs(nsamples = n_samples, param_mins = df_params$lower_limit, param_maxs = df_params$upper_limit)

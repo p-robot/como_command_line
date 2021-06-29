@@ -36,6 +36,7 @@ plot_easyabc:
 
 create_lhs: 
 	Rscript como_lhs.R \
+		2021 \
 		parameters/calibrated_parameters.csv \
 		1000 \
 		parameters/lhs_output.csv
