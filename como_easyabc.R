@@ -42,7 +42,16 @@ como_model <- function(params){
 # MODEL PARAMETERS
 # -----------------
 
-priors <- list(c("unif", 0, 0.1), c("unif", 0.0, 1.5))
+df_params <- read.csv("parameters/calibrated_parameters.csv", stringsAsFactors = FALSE)
+
+priors <- list()
+
+for(i in 1:NROW(df_params)){
+	priors[[i]] <- c(
+		df_params[i, "distribution"],
+		df_params[i, "lower_limit"],
+		df_params[i, "upper_limit"])
+}
 
 #################
 # ABC DEFINITION
@@ -58,12 +67,16 @@ ABC_Lenormand <- ABC_sequential(method = abc_method, model = como_model,
 				summary_stat_target = sum_stat_obs, n_cluster = Ncores, max_pick = 100000,
 				p_acc_min = pacc, verbose = TRUE)
 
-# Add ABC method used in EasyABC package
+# Add additional information on the ABC that was run
 ABC_Lenormand$abc_method <- abc_method
+ABC_Lenormand$calibrated_parameters <- df_params
+ABC_Lenormand$n_cluster <- Ncores
+ABC_Lenormand$nb_simul <- nbsimul
+ABC_Lenormand$p_acc_min <- pacc
+ABC_Lenormand$prior <- priors
 
 # Today's date
 today <- format(Sys.time(), "%Y_%m_%d_%H%M")
-
 
 # Save repo-, hardware-, and OS-specific information
 current_ram <- benchmarkme::get_ram()
