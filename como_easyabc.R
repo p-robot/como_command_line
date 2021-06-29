@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+# 
 # Script to run an ABC calibration using the CoMo model
 # and the EasyABC package
 
@@ -17,27 +19,6 @@ df_obs <- read.csv("tests/data/COVID19_App_Data_Template_CoMoCOVID-19App_v17_p0.
 
 sum_stat_obs <- df_obs$baseline_predicted_reported_and_unreported_med
 
-###################
-# MODEL DEFINITION
-# -----------------
-
-como_model <- function(params){
-	source("params_easyabc.R")
-	source("R/como_preamble.R")
-	source("R/model_once.R")
-	source("R/como_functions.R")
-
-        list_template <- load_template(file_path, country_name, USE_CPP)
-	    
-	# Adjust parameters
-	list_template$parameters["p"] <- params[2]
-	list_template$parameters["rho"] <- params[3]
-
-	list_output <- run_model(list_template)
-	df_sim <- process_outputs(list_output, list_template)
-	return( df_sim$baseline_predicted_reported_and_unreported_med)
-}
-
 #################
 # MODEL PARAMETERS
 # -----------------
@@ -53,13 +34,38 @@ for(i in 1:NROW(df_params)){
 		df_params[i, "upper_limit"])
 }
 
+###################
+# MODEL DEFINITION
+# -----------------
+
+como_model <- function(params){
+	source("params_easyabc.R")
+	source("R/como_preamble.R")
+	source("R/model_once.R")
+	source("R/como_functions.R")
+
+	df_params <- read.csv("parameters/calibrated_parameters.csv", stringsAsFactors = FALSE)
+	n_params <- NROW(df_params)
+
+        list_template <- load_template(file_path, country_name, USE_CPP)
+	    
+	# Adjust parameters
+	for(i in 1:n_params){
+		list_template$parameters[df_params$parameter_name[i]] <- params[i+1]
+	}
+
+	list_output <- run_model(list_template)
+	df_sim <- process_outputs(list_output, list_template)
+	return( df_sim$baseline_predicted_reported_and_unreported_med)
+}
+
 #################
 # ABC DEFINITION
 # ---------------
 
-pacc <- 0.25
+pacc <- 0.2
 nbsimul <- 1000
-Ncores <- 7
+Ncores <- 3
 abc_method <- "Lenormand"
 
 ABC_Lenormand <- ABC_sequential(method = abc_method, model = como_model,
@@ -67,7 +73,7 @@ ABC_Lenormand <- ABC_sequential(method = abc_method, model = como_model,
 				summary_stat_target = sum_stat_obs, n_cluster = Ncores, max_pick = 100000,
 				p_acc_min = pacc, verbose = TRUE)
 
-# Add additional information on the ABC that was run
+# Add additional information to the ABC object that was run
 ABC_Lenormand$abc_method <- abc_method
 ABC_Lenormand$calibrated_parameters <- df_params
 ABC_Lenormand$n_cluster <- Ncores
