@@ -29,3 +29,14 @@ plot_easyabc:
 		tests/data/COVID19_App_Data_Template_CoMoCOVID-19App_v17_p0.0245.csv \
 		results/figures/test_abc.png
 
+
+########################
+# Latin Hypercube Sample
+# ----------------------
+
+create_lhs: 
+	Rscript como_lhs.R \
+		parameters/calibrated_parameters.csv \
+		1000 \
+		parameters/lhs_output.csv
+
