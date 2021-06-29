@@ -1,3 +1,9 @@
 # OS-specific files
 .DS_Store
 
+# Ignore files associated with EasyABC
+tolerance_step*
+p_acc_*step*
+model*step*
+output*step*
+n_simul*step*
