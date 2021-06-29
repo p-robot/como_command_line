@@ -54,3 +54,12 @@ create_random_sample:
 		parameters/random_sample_output.csv
 
 
+######################
+# Uniform grid sample
+# --------------------
+create_uniform_grid:
+	Rscript como_grid_sample.R \
+		parameters/calibrated_parameters.csv \
+		32 \
+		parameters/grid_output.csv
+
