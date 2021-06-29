@@ -22,9 +22,7 @@ sum_stat_obs <- df_obs$baseline_predicted_reported_and_unreported_med
 # -----------------
 
 como_model <- function(params){
-	file_path <- "tests/data/Template_CoMoCOVID-19App_v17.xlsx"
-	country_name <- "United Kingdom of Great Britain"
-	USE_CPP <- TRUE
+	source("params_easyabc.R")
 	source("R/como_preamble.R")
 	source("R/model_once.R")
 	source("R/como_functions.R")
