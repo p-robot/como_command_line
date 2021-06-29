@@ -9,6 +9,8 @@
 # Live version: https://github.com/ocelhay/como/blob/master/inst/comoapp/www/model/model_repeat.R
 # Static version: https://github.com/ocelhay/como/blob/1b61938191d9f63d512a3aaec9f5271a3ca0ed5a/inst/comoapp/www/model/model_repeat.R
 
+# Load parameters
+source("params_easyabc.R")
 
 # Line 468 (app.R)
 population_rv <- list(data = NULL)
