@@ -1,23 +1,29 @@
+#!/usr/bin/env Rscript
+# 
+# R script to generate a latin-hypercube sample
+# 
+# Author: W. Probert
+# Created: June 2021
 
 library(lhs)
 
 # Function to create LHS sample of model input parameters
 como_lhs <- function(nsamples, param_mins, param_maxs){
 
-nparams <- length(param_mins)
+	nparams <- length(param_mins)
 
-# Create uniform LHS
-lhs <- maximinLHS(nsamples, nparams, dup = 1, method = "build")
+	# Create uniform LHS
+	lhs <- maximinLHS(nsamples, nparams, dup = 1, method = "build")
 
-param_ranges <- (param_maxs - param_mins)
+	param_ranges <- (param_maxs - param_mins)
 
-# Adjust LHS to limits of parameters
-mat_ranges <- matrix(param_ranges, nrow = nsamples, ncol = nparams, byrow = TRUE)
-mat_mins <-  matrix(param_mins, nrow = nsamples, ncol = nparams, byrow =TRUE)
+	# Adjust LHS to limits of parameters
+	mat_ranges <- matrix(param_ranges, nrow = nsamples, ncol = nparams, byrow = TRUE)
+	mat_mins <-  matrix(param_mins, nrow = nsamples, ncol = nparams, byrow =TRUE)
 
-param_lhs <- lhs*mat_ranges + mat_mins
+	param_lhs <- lhs*mat_ranges + mat_mins
 
-return(param_lhs)
+	return(param_lhs)
 }
 
 # Pass a list to create an LHS, returns a data.frame
@@ -41,4 +47,19 @@ como_lhs_list <- function(nsamples, param_list){
 	names(lhs) <- names(param_list)
 	return(lhs)
 }
+
+if( !interactive() ){
+	args <- commandArgs(trailingOnly = TRUE)
+	parameter_file <- args[1]
+	n_samples <- as.integer(args[2])
+	output_csv <- args[3]
+
+	df_params <- read.csv(parameter_file, stringsAsFactors = FALSE)
+
+	lhs <- como_lhs(nsamples = n_samples, param_mins = df_params$lower_limit, param_maxs = df_params$upper_limit)
+	df_lhs <- as.data.frame(lhs)
+	names(df_lhs) <- df_params$parameter_name
+	write.csv(df_lhs, output_csv, row.names = FALSE, quote = FALSE)
+}
+
 
