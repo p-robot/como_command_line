@@ -29,3 +29,4 @@ R -e 'install.packages("parallel")'
 R -e 'install.packages("EasyABC")'
 R -e 'install.packages("benchmarkme")'
 
+R -e 'install.packages(doParallel)'
