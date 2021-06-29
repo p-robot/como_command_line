@@ -41,3 +41,16 @@ create_lhs:
 		1000 \
 		parameters/lhs_output.csv
 
+
+#######################
+# Random sample
+# ---------------------
+
+create_random_sample:
+	Rscript como_random_sample.R \
+		2021 \
+		parameters/calibrated_parameters.csv \
+		1000 \
+		parameters/random_sample_output.csv
+
+
