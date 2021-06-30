@@ -12,51 +12,49 @@ library(deSolve)
 library(pracma) # for lsqnonlin()
 
 # Define sample data
+output_dir <- "tests/data/"
 
-output_obs <- c(sample_data$x, sample_data$y)
+################
+# OBSERVED DATA
+# --------------
+# Read observed data (p = 0.0245; rho = 50%)
+df_obs <- read.csv("tests/data/COVID19_App_Data_Template_CoMoCOVID-19App_v17_p0.0245.csv")
 
-LV <- function(Time, State, Pars){
-    
-    with(as.list(c(State, Pars)), {
-    
-    a <- Pars[1]
-    b <- Pars[2]
-    
-    dx <- a*x - x*y
-    dy <- b*x*y - y
-    
-    return(list(c(dx, dy)))
-    }
-    )
+sum_stat_obs <- df_obs$baseline_predicted_reported_and_unreported_med
+
+
+###################
+# MODEL DEFINITION
+# -----------------
+
+como_model <- function(params){
+	source("params_easyabc.R")
+	source("R/como_preamble.R")
+	source("R/model_once.R")
+	source("R/como_functions.R")
+
+	df_params <- read.csv("parameters/calibrated_parameters.csv", stringsAsFactors = FALSE)
+	n_params <- NROW(df_params)
+
+	list_template <- load_template(file_path, country_name, USE_CPP)
+	
+	# Adjust parameters
+	for(i in 1:n_params){
+		list_template$parameters[df_params$parameter_name[i]] <- params[i+1]
+	}
+
+	list_output <- run_model(list_template)
+	df_sim <- process_outputs(list_output, list_template)
+
+	sum_stat_sim <- df_sim$baseline_predicted_reported_and_unreported_med
+	return( sum_stat_sim - sum_stat_obs)
 }
 
 
-# Initial conditions (from eyeing off the graph)
-init <- c(x = 1.0, y = 0.5)
+pars_init <- c(0.1, 1.0)
+lsqnonlin(como_model, pars_init)
 
-# Time steps to simulate
-all_times <- seq(0, 15, length.out = 151)
-
-
-# Function definition
-lv_solve <- function(pars){
-
-    lv_soln <- lsoda(func = LV, y = init, parms = pars, times = all_times)
-    lv.df <- as.data.frame(lv_soln)
-    
-    lv.df$time <- round(lv.df$time, 2)
-    
-    soln <- lv.df[lv.df$time %in% sample_data$time,]
-    output <- c(soln$x, soln$y)
-    
-    return( output - output_obs )
-}
-
-
-pars_init <- c(0.5, 0.5)
-lsqnonlin(lv_solve, pars_init)
-
-optim(pars_init, function(x) sum(lv_solve(x)**2), method = "Nelder-Mead")
+optim(pars_init, function(x) sum(como_model(x)**2), method = "Nelder-Mead")
 
 optim(pars_init, function(x) sum(lv_solve(x)**2), method = "BFGS")
 
