@@ -63,7 +63,10 @@ multi_runs <- function(Y, times, parameters, input, A, ihr, ifr, mort, popstruc,
         
         mat_ode <- ode(y = Y, times = times, method = "euler", hini = 0.05, 
             func = covid, parms = parameters_dup, input = input, 
-            age_group_vectors = age_group_vectors)
+            age_group_vectors = age_group_vectors, contact_home = contact_home,
+            contact_school = contact_school, contact_work = contact_work,
+            contact_other = contact_other, ihr = ihr, ifr = ifr, mort = mort,
+            popstruc = popstruc, popbirth = popbirth)
     }
     
     aux[, , i] <- mat_ode
