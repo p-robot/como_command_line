@@ -15,7 +15,7 @@ source("R/model_once.R")
 load_template <- function(file_path, country_name, USE_CPP = FALSE){
     
     raw_template <- parse_excel_template(file_path)
-    list_template <- clean_excel_template(raw_template, country_name, USE_CPP = FALSE)
+    list_template <- clean_excel_template(raw_template, country_name, USE_CPP)
     
     return( list_template )
 }
