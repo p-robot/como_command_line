@@ -2,7 +2,8 @@
 # https://github.com/ocelhay/como/blob/1b61938191d9f63d512a3aaec9f5271a3ca0ed5a/misc/scripts/covidage_v16.7.R
 
 # set up a function to solve the equations
-covid <- function(t, Y, parameters, input, age_group_vectors){
+covid <- function(t, Y, parameters, input, age_group_vectors, contact_home , contact_school,
+    contact_work, contact_other, ihr, ifr, mort, popstruc, popbirth){
 
   f <- c(1,(1+parameters["give"])/2,(1-parameters["give"])/2,0)
   KH<-parameters["beds_available"]
