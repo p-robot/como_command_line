@@ -10,6 +10,7 @@ if(VERBOSE){cat("Loading packages and functions\n")}
 source("R/como_preamble.R")
 source("R/model_once.R")
 source("R/como_functions.R")
+source("R/como_read_data.R")
 source("R/fun_covid.R") # solution function for deSolve (no CPP)
 
 ###################
