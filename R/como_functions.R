@@ -1,48 +1,5 @@
 #!/usr/bin/env Rscript
 
-source("R/como_read_data.R")
-
-#' Load a CoMo template file to list
-#'
-#' @param template Path to the template
-#' @param country_name Name of the country of interest
-#' @param USE_CPP Should the CPP solver be used?  
-#' @keywords como covid19
-#' @export
-#' @examples
-#' load_template(
-#'     template = "tests/data/Template_CoMoCOVID-19App_v17.xlsx",
-#'     country_name = "United Kingdom of Great Britain")
-load_template <- function(template, country_name, USE_CPP = FALSE){
-
-  file_path <- template
-  
-  list_template <- list(
-      Y = Y, 
-      times = times, 
-      startdate = startdate,
-      stopdate = stopdate,
-      parameters = parameters, 
-      input = vectors, 
-      A = A,  
-      ihr = ihr, 
-      ifr = ifr, 
-      mort = mort, 
-      popstruc = popstruc, 
-      popbirth = popbirth, 
-      ageing = ageing,
-      contact_home = contact_home, 
-      contact_school = contact_school, 
-      contact_work = contact_work, 
-      contact_other = contact_other, 
-      age_group_vectors = interventions$baseline_age_groups, 
-      cases_rv = cases_rv,
-      interventions = interventions,
-      use_cpp = USE_CPP
-  )
-  return(list_template)
-}
-
 #' Run the CoMo model using a template
 #'
 #' @param list_template A list of a parameter template
@@ -64,8 +21,8 @@ run_model <- function(list_template){
       l$ihr, 
       l$ifr, 
       l$mort, 
-      l$popstruc, 
-      l$popbirth, 
+      popstruc = l$popstruc, 
+      popbirth = l$popbirth, 
       l$ageing,
       contact_home = l$contact_home, 
       contact_school = l$contact_school, 
