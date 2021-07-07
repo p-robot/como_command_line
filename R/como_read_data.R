@@ -9,6 +9,8 @@
 # Live version: https://github.com/ocelhay/como/blob/master/inst/comoapp/www/model/model_repeat.R
 # Static version: https://github.com/ocelhay/como/blob/1b61938191d9f63d512a3aaec9f5271a3ca0ed5a/inst/comoapp/www/model/model_repeat.R
 
+read_data <- function(file_path, country_name){
+
 # Line 468 (app.R)
 population_rv <- list(data = NULL)
 cases_rv <- list(data = NULL)
@@ -28,67 +30,6 @@ interventions <- list(baseline_mat = tibble(NULL),
                                 message_baseline_interventions = NULL,
                                 valid_future_interventions = TRUE, 
                                 message_future_interventions = NULL)
-
-
-# Line 487 (app.R)
-
-# # Create interventions tibble with input from UI ----
-# interventions$baseline_mat <- tibble(
-#   intervention = unlist(input[paste0("baseline_intervention_", 1:nb_interventions_max)]),
-#   date_start = do.call("c", input[paste0("baseline_daterange_", 1:nb_interventions_max)])[seq(1, (2*nb_interventions_max - 1), by = 2)],
-#   date_end = do.call("c", input[paste0("baseline_daterange_", 1:nb_interventions_max)])[seq(2, 2*nb_interventions_max, by = 2)],
-#   value = unlist(input[paste0("baseline_coverage_", 1:nb_interventions_max)]),
-#   age_group = unlist(map(input[paste0("baseline_age_group_", 1:nb_interventions_max)], 
-#                          ~ paste(str_sub(.x, 1, 2), collapse = ","))),
-#   Target = 1:nb_interventions_max) %>%
-#   mutate(unit = case_when(intervention == "(*Self-isolation) Screening" ~ " contacts",
-#                           intervention == "Mass Testing" ~ " thousands tests", 
-#                           TRUE ~ "%")) %>%
-#   filter(intervention != "_")
-
-
-# # Fill list of age groups
-# vec <- interventions$baseline_mat$age_group
-# if(length(vec) > 0) {
-#   for (i in 1:length(vec)) {
-#     interventions$baseline_age_groups[[i]] <- parse_age_group(vec[i])
-#   }
-# }
-
-# interventions$future_mat <- tibble(
-#   intervention = unlist(input[paste0("future_intervention_", 1:nb_interventions_max)]),
-#   date_start = do.call("c", input[paste0("future_daterange_", 1:nb_interventions_max)])[seq(1, (2*nb_interventions_max - 1), by = 2)],
-#   date_end = do.call("c", input[paste0("future_daterange_", 1:nb_interventions_max)])[seq(2, 2*nb_interventions_max, by = 2)],
-#   value = unlist(input[paste0("future_coverage_", 1:nb_interventions_max)]),
-#   age_group = unlist(map(input[paste0("future_age_group_", 1:nb_interventions_max)], 
-#                          ~ paste(str_sub(.x, 1, 2), collapse = ","))),
-#   Target = 1:nb_interventions_max) %>%
-#   mutate(unit = case_when(intervention == "(*Self-isolation) Screening" ~ " contacts",
-#                           intervention == "Mass Testing" ~ " thousands tests", 
-#                           TRUE ~ "%")) %>%
-#   filter(intervention != "_")
-
-# # Fill list of age groups
-# vec <- interventions$future_mat$age_group
-# if(length(vec) > 0) {
-#   for (i in 1:length(vec)) {
-#     interventions$future_age_groups[[i]] <- parse_age_group(vec[i])
-#   }
-# }
-
-# # Validation of interventions ----
-# validation_baseline <- fun_validation_interventions(dta = interventions$baseline_mat, 
-#                                                     simul_start_date = input$date_range[1], 
-#                                                     simul_end_date= input$date_range[2])
-# interventions$valid_baseline_interventions <- validation_baseline$validation_interventions
-# interventions$message_baseline_interventions <- validation_baseline$message_interventions
-
-# validation_future <- fun_validation_interventions(dta = interventions$future_mat, 
-#                                                   simul_start_date = input$date_range[1], 
-#                                                   simul_end_date= input$date_range[2])
-# interventions$valid_future_interventions <- validation_future$validation_interventions
-# interventions$message_future_interventions <- validation_future$message_interventions
-
 
 # Line 609 (app.R)
 version <- read_excel(file_path, sheet = 1)
@@ -212,26 +153,8 @@ if(nb_interventions_baseline > 0) {
 }
 
 
-# # Update interventions in the UI: future interventions
-# interventions_excel_future <- interventions_excel %>% 
-#   filter(apply_to == "Hypothetical Scenario")
-# nb_interventions_future <- interventions_excel_future %>% nrow()
-# if(nb_interventions_future > 0) {
-  
-#   for (i in 1:nb_interventions_future) {
-#     input[[paste0("future_intervention_", i)]] = interventions_excel_future[[i, "intervention"]]
-#     input[[paste0("future_daterange_", i)]] = c(
-#                          start = interventions_excel_future[[i, "date_start"]], 
-#                          end = interventions_excel_future[[i, "date_end"]])
-#     input[[paste0("future_coverage_", i)]] = c(value = interventions_excel_future[[i, "value"]])
-#     input[[paste0("future_age_group_", i)]] = vec_age_categories[parse_age_group(interventions_excel_future$age_group[i])]
-#   }
-# }
-
-
 # Previous results are no longer valid
 simul_interventions$results <- NULL
-
 
 # Line 789 (app.R)
 source("R/model_repeat.R")
@@ -248,3 +171,4 @@ vectors$vc_vector[which(vectors$vc_vector == 100)] <- 99
 
 check_parameters_list_for_na(parameters_list = parameters)
 
+}
