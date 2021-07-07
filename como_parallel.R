@@ -8,7 +8,7 @@ library(foreach)
 library(doParallel)
 library(benchmarkme)
 
-output_dir <- "output/"
+output_dir <- "results"
 df_params <- read.csv("parameters/lebanon_parameters.csv", stringsAsFactors = FALSE)
 n_params <- NCOL(df_params)
 
@@ -18,7 +18,11 @@ doParallel::registerDoParallel(cl = clust)
 
 foreach(i = 1:NROW(df_params)) %dopar% {
 	cat("Run ", i, "\n")
-	source("params_easyabc.R")
+
+	file_path <- "tests/data/Template_CoMoCOVID-19App_v17.xlsx"
+	country_name <- "United Kingdom of Great Britain"
+	USE_CPP <- TRUE
+
 	source("R/como_preamble.R")
 	source("R/model_once.R")
 	source("R/como_functions.R")
