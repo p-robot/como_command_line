@@ -1,5 +1,7 @@
 #!/usr/bin/env Rscript
 
+source("R/como_read_data.R")
+
 #' Load a CoMo template file to list
 #'
 #' @param template Path to the template
@@ -14,7 +16,6 @@
 load_template <- function(template, country_name, USE_CPP = FALSE){
 
   file_path <- template
-  source("R/como_read_data.R")
   
   list_template <- list(
       Y = Y, 
