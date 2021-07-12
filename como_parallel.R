@@ -43,7 +43,14 @@ foreach(i = 1:NROW(df_params)) %dopar% {
 
 	list_output <- run_model(list_template)
 	df_sim <- process_outputs(list_output, list_template)
-
+	
+	# Add a parameter ID (if that column name exists in the parameter df, else use row number
+	if( "param_id" %in% names(df_params) ){
+		df_sim$param_id <- df_params[i, "param_id"]
+	}else{
+		df_sim$param_id <- i
+	}
+	
 	write.csv(df_sim, file.path(output_dir, paste0("como_output_row", i, ".csv")), 
         row.names = FALSE, quote = FALSE)
 }
