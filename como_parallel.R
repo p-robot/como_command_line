@@ -19,30 +19,49 @@ USE_CPP <- TRUE
 n_cores <- 3
 
 df_params <- read.csv(parameters_csv, stringsAsFactors = FALSE)
-n_params <- NCOL(df_params)
+n_params <- NCOL(df_params) - 1
 
 clust <- parallel::makeCluster(n_cores, type = "PSOCK")
 doParallel::registerDoParallel(cl = clust)
 
 foreach(i = 1:NROW(df_params)) %dopar% {
-	cat("Run ", i, "\n")
-	source("R/como_preamble.R")
-	source("R/model_once.R")
-	source("R/como_functions.R")
-	source("R/como_read_data.R")
+        cat("Run ", i, "\n")
+        source("R/como_preamble.R")
+        source("R/model_once.R")
+        source("R/como_functions.R")
+        source("R/como_read_data.R")
 
-	list_template <- load_template(file_path, country_name, USE_CPP)
-	
-	# Adjust parameters
-	for(j in 1:n_params){
-		param_name <- names(df_params)[j]
-		list_template$parameters[param_name] <- df_params[i, param_name]
-		cat("adjusting param ", param_name, " to value ", df_params[i, param_name])
-	}
-	cat("\n")
-	list_output <- run_model(list_template)
-	df_sim <- process_outputs(list_output, list_template)
-	
+        # Read Excel template
+        raw_template <- parse_excel_template(file_path)
+
+        # Adjust parameters
+        for(j in 1:n_params){
+
+                # Get parameter name
+                param_name <- names(df_params)[j]
+                cat(param_name, "\n")
+
+                # Find the worksheet in the template where this parameter is housed
+                coords <- find_parameter_worksheet(param_name, raw_template)
+                worksheet <- coords$worksheet
+                row <- coords$row
+                cat(worksheet, "\n")
+
+                # Adjust parameter in the raw excel template.  
+                if( grepl("date", param_name) ){
+                        raw_template[[worksheet]][row, "Value_Date"] <- as.Date(df_params[i, param_name])
+                        cat("adjusting param ", param_name, " to value ", format(as.Date(df_params[i, param_name]), format = "%d/%m/%Y"), "\n")
+                }else{
+                        raw_template[[worksheet]][row, "Value"] <- df_params[i, param_name]
+                        cat("adjusting param ", param_name, " to value ", df_params[i, param_name], "\n")
+                }
+
+                list_template <- clean_excel_template(raw_template, country_name, USE_CPP)
+        }
+        cat("\n")
+        list_output <- run_model(list_template)
+        df_sim <- process_outputs(list_output, list_template)
+
 	# Add a parameter ID (if that column name exists in the parameter df, else use row number
 	if( "param_id" %in% names(df_params) ){
 		df_sim$param_id <- df_params[i, "param_id"]
@@ -76,3 +95,4 @@ system_info <- list(
 	repo_remote = system("git remote get-url origin", intern = TRUE))
 
 save(system_info, file = file.path(output_dir, paste0(today, "_abc_output.Rdata")))
+
