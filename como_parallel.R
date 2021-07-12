@@ -26,10 +26,10 @@ doParallel::registerDoParallel(cl = clust)
 
 foreach(i = 1:NROW(df_params)) %dopar% {
 	cat("Run ", i, "\n")
-
 	source("R/como_preamble.R")
 	source("R/model_once.R")
 	source("R/como_functions.R")
+	source("R/como_read_data.R")
 
 	list_template <- load_template(file_path, country_name, USE_CPP)
 	
@@ -40,7 +40,6 @@ foreach(i = 1:NROW(df_params)) %dopar% {
 		cat("adjusting param ", param_name, " to value ", df_params[i, param_name])
 	}
 	cat("\n")
-
 	list_output <- run_model(list_template)
 	df_sim <- process_outputs(list_output, list_template)
 	
