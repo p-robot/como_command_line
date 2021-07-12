@@ -37,7 +37,7 @@ if( !interactive() ){
 		for( d in 1:NROW(date_params) ){
 			date_lower <- as.Date(date_params[d,"lower_limit"])
 			date_upper <- as.Date(date_params[d,"upper_limit"])
-			sampled_dates <- sample(0:as.integer(date_upper - date_lower), size = n_samples)
+			sampled_dates <- sample(0:as.integer(date_upper - date_lower), size = n_samples, replace = TRUE)
 			date_output[[d]] <- data.frame("dates" = sampled_dates + date_lower)
 		}
 
