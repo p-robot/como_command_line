@@ -12,6 +12,23 @@
 source("R/model_once.R")
 
 
+# Return name of worksheet within which a particular parameter is found
+find_parameter_worksheet <- function(parameter_name, template){
+
+    worksheets <- names(template)
+
+    for( w in worksheets ){
+	if( "Parameter" %in% names(template[[w]]) ){
+        if( parameter_name %in% template[[w]]$Parameter ){
+
+		return( list(worksheet = as.character(w), row = which(parameter_name == template[[w]]$Parameter)) )
+        }
+	}
+    }
+}
+
+
+
 load_template <- function(file_path, country_name, USE_CPP = FALSE){
     
     raw_template <- parse_excel_template(file_path)
