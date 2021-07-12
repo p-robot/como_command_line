@@ -16,7 +16,7 @@ if( !interactive() ){
 	set.seed(seed)
 
 	# Read the CSV file of parameters to adjust
-	df <- read.csv(parameter_file, stringsAsFactors = FALSE)
+	df <- read.csv(parameter_file, stringsAsFactors = FALSE, comment.char = "#")
 
 	date_params <- df[df$class == "date",]
 	numeric_params <- df[df$class == "numeric",]
