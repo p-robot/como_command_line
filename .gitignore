@@ -7,3 +7,6 @@ p_acc_*step*
 model*step*
 output*step*
 n_simul*step*
+
+# Ignore csv files in results folder
+results/*.csv
