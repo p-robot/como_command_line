@@ -1,3 +1,6 @@
-parameter_name,lower_limit,upper_limit,distribution
-p,0, 0.1,unif
-rho,0,1.5,unif
+parameter_name,lower_limit,upper_limit,class,distribution
+p,0,0.1,numeric,unif
+rho,0,1.5,numeric,unif
+date_range_simul_start,"2020-03-01","2020-03-15",date,unif
+date_range_variant_start,"2021-02-01","2021-02-15",date,unif
+
