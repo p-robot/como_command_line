@@ -24,6 +24,9 @@ n_params <- NCOL(df_params) - 1
 clust <- parallel::makeCluster(n_cores, type = "PSOCK")
 doParallel::registerDoParallel(cl = clust)
 
+# Calculate start time for runtime calculation
+start_time <- Sys.time()
+
 foreach(i = 1:NROW(df_params)) %dopar% {
         cat("Run ", i, "\n")
         source("R/como_preamble.R")
@@ -79,6 +82,9 @@ parallel::stopCluster(cl = clust)
 # Today's date
 today <- format(Sys.time(), "%Y_%m_%d_%H%M")
 
+# Calculate runtime
+runtime <- Sys.time() - start_time
+
 # Save repo-, hardware-, and OS-specific information
 current_ram <- benchmarkme::get_ram()
 current_cores <- parallel::detectCores()
@@ -90,6 +96,7 @@ system_info <- list(
 	Sys.info = Sys.info(),
 	R.Version = R.Version(),
 	R.home = R.home(), 
+	runtime = runtime,
 	wd = getwd(), 
 	commit = system("git rev-parse HEAD", intern = TRUE), 
 	repo_remote = system("git remote get-url origin", intern = TRUE))
