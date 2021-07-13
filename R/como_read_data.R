@@ -123,7 +123,7 @@ param <- bind_rows(raw_template[["Parameters"]],
 # Extra Parameters sheet (if exists)
 if( "Extra Param" %in% names(raw_template) ){
   cat("Reading Extra Param sheet\n")
-  extra_param <- template[["Extra Param"]] %>%
+  extra_param <- raw_template[["Extra Param"]] %>%
       mutate(Value_Date = as.Date(Value_Date)) %>%
       drop_na(Parameter)
   
