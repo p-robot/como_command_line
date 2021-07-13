@@ -20,6 +20,7 @@ if( !interactive() ){
 
 	date_params <- df[df$class == "date",]
 	numeric_params <- df[df$class == "numeric",]
+	integer_params <- df[df$class == "integer",]
 
 	# Overarching list to store results
 	output <- list()
@@ -27,7 +28,12 @@ if( !interactive() ){
 	# Count number of parameters of different classes
 	n_date_params <- NROW(date_params)
 	n_numeric_params <- NROW(numeric_params)
+	n_integer_params <- NROW(integer_params)
+	if (n_integer_params > 0 ){
+integer_output <- list()
 
+
+	}
 	# Create a random sample of date variables (if any)
 	if( n_date_params > 0 ){
 
