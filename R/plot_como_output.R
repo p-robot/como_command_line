@@ -1,35 +1,37 @@
 #!/usr/bin/env Rscript
+# 
+# Script to plot a single timeseries output from the CoMo model
+# 
+# Usage
+# -----
+# 
+# Rscript plot_como_output.R <INPUT_FILE> <PLOTTING_VAR> <OUTPUT_FILE>
+# 
+# Arguments
+# ---------
+# INPUT_FILE: Path to CSV of CoMo output
+# PLOTTING_VAR: Column name of the CoMo output file to plot against 'date'
+# OUTPUT_FILE: File of output figure to save
+# 
+# W. Probert, 2021
 
-require(ggplot2)
-
-###################
-# COMMAND-LINE ARGS
-# -----------------
+library(ggplot2)
 
 args <- commandArgs(trailingOnly = TRUE)
-file_path <- args[1]
-output_file <- args[2]
-var <- args[3]
 
-# Read input data
-df_all <- read.csv(file_path)
+input_file <- args[1]
+plotting_var <- args[2]
+output_file <- args[3]
 
-df_all$date <- as.Date(df_all$date)
+df <- read.csv(input_file)
 
-p <- ggplot(df_all, aes_string(x = "date", y = var)) + 
-    geom_line(size = 0.8, alpha = 0.6) + 
-    theme_bw() + xlab("Date")
+# Convert date to date class
+df$date <- as.Date(df$date)
 
-ggsave(output_file, p, width = 8, height = 8)
+p <- ggplot(df, aes_string(x = "date", y = plotting_var)) + 
+	geom_line() + 
+	theme_bw()
 
-#df_sub <- unique(subset(df_all, select = c("date", "baseline_death_deaths_from_covid_med", "baseline_death_deaths_with_covid_med", "p") ))
 
-#p <- ggplot(df_sub, aes(x = date, y = baseline_death_deaths_from_covid_med + baseline_death_deaths_with_covid_med, color = p, group = p)) + 
-#    geom_line() + 
-#    xlab("Prob. of infection given contact") + 
-#    ylab("Covid-19 deaths from 2019-12-02 to 2020-12-31") +
-#    geom_hline(yintercept = 23749, linetype = "dashed", color = "grey") + 
-#    geom_vline(xintercept = 0.02, linetype = "dashed", color = "grey") + 
-#    theme_bw()
-#
-#ggsave(paste0(output_file, "_test_output_deaths_vs_p.pdf"), p)
+ggsave(output_file, p, height = 6, width = 8, dpi = 300)
+
