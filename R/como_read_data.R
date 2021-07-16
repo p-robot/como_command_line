@@ -123,7 +123,7 @@ param <- bind_rows(raw_template[["Parameters"]],
 # Extra Parameters sheet (if exists)
 if( "Extra Param" %in% names(raw_template) ){
   cat("Reading Extra Param sheet\n")
-  extra_param <- template[["Extra Param"]] %>%
+  extra_param <- raw_template[["Extra Param"]] %>%
       mutate(Value_Date = as.Date(Value_Date)) %>%
       drop_na(Parameter)
   
@@ -131,6 +131,16 @@ if( "Extra Param" %in% names(raw_template) ){
   extra_param$Value[extra_param$Parameter == "date_range_variant_start"]  <- as.numeric(extra_param$Value_Date[extra_param$Parameter == "date_range_variant_start"] - startdate)
   
   param <- bind_rows(param, extra_param)
+}else{
+    extra_param <- data.frame(
+	Label = c("Date of new variant introduction", "New variant p multiplier"), 
+	Value_Date = c(NA, NA), 
+	Value = c(-1, 1), 
+	Unit = c(NA, NA), 
+	Type = c("date_range_variant_start", "slider"), 
+	Parameter = c("date_range_variant_start", "new_variant_p_multiplier"))
+    extra_param <- as_tibble(extra_param)
+    param <- bind_rows(param, extra_param)
 }
 
 
