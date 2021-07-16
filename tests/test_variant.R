@@ -29,7 +29,7 @@ cat("Checking CPP and non-CPP output from the template:", file_path, "\n")
 list_template_cpp <- load_template(file_path, country_name, USE_CPP = TRUE)
 list_output_cpp <- run_model(list_template_cpp)
 df_cli_cpp <- process_outputs(list_output_cpp, list_template_cpp)
-write.csv(df_cli_cpp, "cpp.csv")
+#write.csv(df_cli_cpp, "cpp.csv")
 
 ############################
 # RUN THE MODEL WITHOUT  CPP
@@ -37,7 +37,7 @@ write.csv(df_cli_cpp, "cpp.csv")
 list_template_noncpp <- load_template(file_path, country_name, USE_CPP = FALSE)
 list_output_noncpp <- run_model(list_template_noncpp)
 df_cli_noncpp <- process_outputs(list_output_noncpp, list_template_noncpp)
-write.csv(df_cli_noncpp, "noncpp.csv")
+#write.csv(df_cli_noncpp, "noncpp.csv")
 
 
 # List of columns to check
