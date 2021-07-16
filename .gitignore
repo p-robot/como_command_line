@@ -10,3 +10,6 @@ n_simul*step*
 
 # Ignore csv files in results folder
 results/*.csv
+
+# Ignore log folder
+log
