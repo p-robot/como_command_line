@@ -10,6 +10,9 @@ Requirements
 Tests were run on R version 4.1.0.  For the CPP version of the solver (much faster), one needs to install the comoOdeCpp package, version 16.6.0.  From within R, this can be installed like so: 
 
 ```bash
+R -e 'library(devtools); install_github("p-robot/comoOdeCpp@new_variant", subdir="comoOdeCpp")'
+
+# The original CPP folder is found here (but does not include the ability to adjust transmission from introduction of a new variant): 
 R -e 'library(devtools); install_github("bogaotory/comoOdeCpp@v16.6.0", subdir="comoOdeCpp")'
 ```
 
