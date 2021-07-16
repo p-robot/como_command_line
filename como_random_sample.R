@@ -20,6 +20,7 @@ if( !interactive() ){
 
 	date_params <- df[df$class == "date",]
 	numeric_params <- df[df$class == "numeric",]
+	integer_params <- df[df$class == "integer",]
 
 	# Overarching list to store results
 	output <- list()
@@ -27,7 +28,24 @@ if( !interactive() ){
 	# Count number of parameters of different classes
 	n_date_params <- NROW(date_params)
 	n_numeric_params <- NROW(numeric_params)
+	n_integer_params <- NROW(integer_params)
+	if (n_integer_params > 0 ){
+		integer_output <- list()
+		
+		# Sample uniformly from each date parameters
+		for( i in 1:NROW(integer_params) ){
+			integer_lower <- as.integer(integer_params[i,"lower_limit"])
+			integer_upper <- as.integer(integer_params[i,"upper_limit"])
+			sampled_integers <- sample(integer_lower:integer_upper, 
+						size = n_samples, replace = TRUE)
+			integer_output[[i]] <- data.frame("integer" = sampled_integers)
+		}
 
+		integer_outputs <- do.call(cbind, integer_output)
+		names(integer_outputs) <- integer_params$parameter_name
+		output[["integer"]] <- integer_outputs
+	}
+	
 	# Create a random sample of date variables (if any)
 	if( n_date_params > 0 ){
 
