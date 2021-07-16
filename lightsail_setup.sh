@@ -18,8 +18,7 @@ R -e 'install.packages("foreach")'
 R -e 'install.packages("parallel")'
 R -e 'install.packages("EasyABC")'
 R -e 'install.packages("benchmarkme")'
-
-R -e 'install.packages(doParallel)'
+R -e 'install.packages("doParallel")'
 
 # If errors with testthat occur, this might resolve the issue: 
 #R -e 'install.packages("rlang", dependencies = c("Depends", "Imports", "LinkingTo", "Suggests"))'
