@@ -13,3 +13,5 @@ results/*.csv
 
 # Ignore log folder
 log
+
+*.xlsx

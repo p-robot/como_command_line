@@ -23,8 +23,8 @@ mse <- function(obs, sim){
 mse_como <- function(df_obs, df_sim, var_obs, var_sim){
     
     # Subset simulated data to the dates of the observed data.  
-    min_final <- max(c(min(df_obs$date), min(df_sim$date)))
-    max_final <- min(c(max(df_obs$date), max(df_sim$date)))
+    min_final <- as.Date("2020-07-01")#max(c(min(df_obs$date), min(df_sim$date)))
+    max_final <- as.Date("2021-07-01")# min(c(max(df_obs$date), max(df_sim$date)))
     
     vec_obs <- df_obs[[var_obs]][df_obs$date < max_final & df_obs$date > min_final]
     vec_sim <- df_sim[[var_sim]][df_sim$date < max_final & df_sim$date > min_final]

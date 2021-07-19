@@ -1,5 +1,8 @@
 #!/usr/bin/env Rscript
 
+# Print warnings
+options(warn = 1)
+
 VERBOSE <- TRUE
 USE_CPP <- TRUE
 
