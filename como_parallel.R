@@ -16,7 +16,7 @@ parameters_csv <- args[3]
 output_dir <- args[4]
 
 USE_CPP <- TRUE
-n_cores <- 3
+n_cores <- 7
 
 df_params <- read.csv(parameters_csv, stringsAsFactors = FALSE)
 n_params <- NCOL(df_params) - 1
