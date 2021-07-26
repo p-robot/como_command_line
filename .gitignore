@@ -13,3 +13,12 @@ results/*.csv
 
 # Ignore log folder
 log
+
+results/*.png
+data/*.xlsx
+data/*.csv
+
+tests/data/*.csv
+tests/data/*.xlsx
+
+parameters/*.csv
