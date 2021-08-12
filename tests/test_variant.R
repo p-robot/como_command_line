@@ -25,6 +25,7 @@ file_path <- "tests/data/Template_CoMoCOVID-19App_v17_p0.0245_variant.xlsx"
 #########################
 # RUN THE MODEL USING CPP
 # -----------------------
+cat("TEST: output using variant parameters are identical between CPP and deSolve solvers\n")
 cat("Checking CPP and non-CPP output from the template:", file_path, "\n")
 list_template_cpp <- load_template(file_path, country_name, USE_CPP = TRUE)
 list_output_cpp <- run_model(list_template_cpp)
@@ -46,5 +47,42 @@ cols2check <- names(df_cli_cpp)[grepl("baseline", names(df_cli_cpp))]
 for(col in cols2check){
   expect_equal(df_cli_cpp[[col]], df_cli_noncpp[[col]])
 }
-print("All baseline CPP and non-CPP output passed")
+cat("\t\tAll baseline CPP and non-CPP output passed\n")
+
+
+###################
+# ARGUMENTS
+# -----------------
+# Parse command-line arguments
+country_name <- "United Kingdom of Great Britain"
+file_path <- "tests/data/Template_CoMoCOVID-19App_v17_p0.0245_variant2.xlsx"
+
+#########################
+# RUN THE MODEL USING CPP
+# -----------------------
+cat("***\n")
+cat("TEST: output using **variant2** parameters are identical between CPP and deSolve solvers\n")
+cat("***\n")
+cat("Checking CPP and non-CPP output from the template:", file_path, "\n")
+list_template_cpp <- load_template(file_path, country_name, USE_CPP = TRUE)
+list_output_cpp <- run_model(list_template_cpp)
+df_cli_cpp <- process_outputs(list_output_cpp, list_template_cpp)
+#write.csv(df_cli_cpp, "cpp.csv")
+
+############################
+# RUN THE MODEL WITHOUT  CPP
+# --------------------------
+list_template_noncpp <- load_template(file_path, country_name, USE_CPP = FALSE)
+list_output_noncpp <- run_model(list_template_noncpp)
+df_cli_noncpp <- process_outputs(list_output_noncpp, list_template_noncpp)
+#write.csv(df_cli_noncpp, "noncpp.csv")
+
+
+# List of columns to check
+cols2check <- names(df_cli_cpp)[grepl("baseline", names(df_cli_cpp))]
+
+for(col in cols2check){
+  expect_equal(df_cli_cpp[[col]], df_cli_noncpp[[col]])
+}
+cat("\t\tAll baseline CPP and non-CPP output passed\n")
 

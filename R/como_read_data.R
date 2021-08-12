@@ -129,16 +129,32 @@ if( "Extra Param" %in% names(raw_template) ){
   
   startdate <- param$Value_Date[param$Parameter == "date_range_simul_start"]
   extra_param$Value[extra_param$Parameter == "date_range_variant_start"]  <- as.numeric(extra_param$Value_Date[extra_param$Parameter == "date_range_variant_start"] - startdate)
-  
+  if( any(extra_param$Parameter == "date_range_variant2_start") ){
+	  cat("Reading 2nd variant parameters\n")
+      extra_param$Value[extra_param$Parameter == "date_range_variant2_start"]  <- as.numeric(extra_param$Value_Date[extra_param$Parameter == "date_range_variant2_start"] - startdate)
+  }else{
+
+    # If the 2nd variant params aren't included, then include dummy values for these
+    extra_param2 <- data.frame(
+        Label = c("Date of 2nd new variant introduction", "2nd new variant p multiplier"),
+        Value_Date = c(NA, NA),
+        Value = c(-1, 1),
+        Unit = c(NA, NA),
+        Type = c("date_range_variant_start", "slider"),
+        Parameter = c("date_range_variant2_start", "new_variant2_p_multiplier"))
+    extra_param2 <- as_tibble(extra_param2)
+    extra_param <- bind_rows(extra_param, extra_param2)
+  }
+
   param <- bind_rows(param, extra_param)
 }else{
     extra_param <- data.frame(
-	Label = c("Date of new variant introduction", "New variant p multiplier"), 
-	Value_Date = c(NA, NA), 
-	Value = c(-1, 1), 
-	Unit = c(NA, NA), 
-	Type = c("date_range_variant_start", "slider"), 
-	Parameter = c("date_range_variant_start", "new_variant_p_multiplier"))
+	Label = c("Date of new variant introduction", "New variant p multiplier", "Date of 2nd new variant introduction", "2nd new variant p multiplier"), 
+	Value_Date = c(NA, NA, NA, NA), 
+	Value = c(-1, 1, -1, 1), 
+	Unit = c(NA, NA, NA, NA), 
+	Type = c("date_range_variant_start", "slider", "date_range_variant_start", "slider"), 
+	Parameter = c("date_range_variant_start", "new_variant_p_multiplier", "date_range_variant2_start", "new_variant2_p_multiplier"))
     extra_param <- as_tibble(extra_param)
     param <- bind_rows(param, extra_param)
 }
@@ -321,7 +337,8 @@ parameters <- input[
     "init", "sample_size", "se", "sp",
     "phi",
     # addition from como_command_line
-    "new_variant_p_multiplier", "date_range_variant_start"
+    "new_variant_p_multiplier", "date_range_variant_start",
+    "new_variant2_p_multiplier", "date_range_variant2_start"
   )] %>% 
   unlist()
 

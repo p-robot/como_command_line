@@ -61,7 +61,13 @@ covid <- function(t, Y, parameters, input, age_group_vectors, contact_home , con
              p <- p*new_variant_p_multiplier
            }
          }
-         
+
+         if( exists("date_range_variant2_start") & exists("new_variant2_p_multiplier") ){
+           if( t > date_range_variant2_start ){
+             p <- p*new_variant2_p_multiplier
+           }
+	 }
+
          P <- (S+E+I+R+X+Z+V+H+HC+ICU+ICUC+ICUCV+Vent+VentC+EV+ER+EVR+VR+HCICU+HCV+
                  QS+QE+QI+QR+CL+QC+QEV+QV+QER+QEVR+QVR)
          Q <- (sum(QS)+sum(QE)+sum(QI)+sum(QC)+sum(QR)+sum(QV)+sum(QER)+sum(QEVR)+sum(QEV)+sum(QVR))/sum(P)
