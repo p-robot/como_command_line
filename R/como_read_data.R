@@ -88,9 +88,9 @@ simul_interventions <- list(results = NULL, interventions_available = FALSE)
 
 # Line 475 (app.R)
 # Management of interventions ----
-interventions <- list(baseline_mat = tibble(NULL), 
+interventions <- list(baseline_mat = tibble(), 
                                 baseline_age_groups = list(),
-                                future_mat = tibble(NULL),
+                                future_mat = tibble(),
                                 future_age_groups = list(),
                                 valid_baseline_interventions = TRUE, 
                                 message_baseline_interventions = NULL,
